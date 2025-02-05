@@ -1,0 +1,95 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java-library'
+apply plugin: 'jacoco'
+apply plugin: "info.solidsoft.pitest"
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springBootVersion = "3.2.4"
+    postgresVersion = "42.5.3"
+    flywayVersion = "9.14.1"
+    hsqldbVersion = "2.7.1"
+    commonDbcpVersion = "2.9.0"
+}
+
+dependencies {
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testCompileOnly("org.springframework:spring-test")
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.2.4")
+
+    testImplementation("org.mockito:mockito-core:5.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.12'
+    runtimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.14'
+
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    reports {
+        xml.required = true
+        xml.destination file("./build/reports/jacoco/report.xml")
+    }
+}
+
+
+sonar {
+
+    properties {
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.token", "squ_9dc885e7a4ffccc1b73abf9c24fa79ebb81d0304"
+        property "sonar.login", "admin"
+        property "sonar.password", "aaaaa"
+        property "sonar.coverage.jacoco.xmlReportPaths", "./build/reports/jacoco/report.xml"
+    }
+
+}
+
+// build.gradle
+subprojects {
+    sonar {
+        properties {
+            property "sonar.java.coveragePlugin", "jacoco"
+            property "sonar.token", "squ_9dc885e7a4ffccc1b73abf9c24fa79ebb81d0304"
+            property "sonar.login", "admin"
+            property "sonar.password", "aaaaa"
+            property "sonar.coverage.jacoco.xmlReportPaths", "./build/reports/jacoco/report.xml"
+        }
+    }
+}
+
+pitest {
+    junit5PluginVersion = '1.2.1'
+    threads = 4
+    pitestVersion = "1.15.8"
+    failWhenNoMutations = false
+    targetClasses.add("org.mines.*")
+    outputFormats.add("XML")
+    outputFormats.add("HTML")
+    timestampedReports = false
+    timeoutConstInMillis = 6000
+    excludedTestClasses.add("*.*Config")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "--enable-preview"
+}
+tasks.withType(Test).configureEach {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += "--enable-preview"
+}
