@@ -26,6 +26,10 @@ public class PhoneService implements PhoneUseCase {
 
     public PhoneService() { }
 
+    private boolean filterPhonesByAge(Phone phone, Integer age) {
+        return phone.age() <= age;
+    }
+
     @Override
     public List<Phone> searchPhones(PhoneSearchRequestDto phoneSearchRequestDto) {
         UserSearchRequestDto userSearchRequestDto = UserSearchRequestDto.UserSearchRequestDtoBuilder
@@ -37,19 +41,22 @@ public class PhoneService implements PhoneUseCase {
                 .build();
 
         List<User> users = userService.searchUsers(userSearchRequestDto);
-        List<Phone> phones = new ArrayList<>();
+        List<Phone> phones = users.stream().map(userPhone -> Phone.PhoneBuilder
+                .aPhone()
+                .withAge(userService.getUserAge(userPhone))
+                .withFirstname(userPhone.firstname())
+                .withLastname(userPhone.lastname())
+                .withGender(userPhone.gender())
+                .withLocation(userPhone.location())
+                .withPhone(userPhone.phone())
+                .build()
+        ).collect(Collectors.toList());
 
-        for (User user : users) {
-            Phone phone = Phone.PhoneBuilder
-                    .aPhone()
-                    .withAge(userService.getUserAge(user))
-                    .withFirstname(user.firstname())
-                    .withLastname(user.lastname())
-                    .withGender(user.gender())
-                    .withLocation(user.location())
-                    .withPhone(user.phone())
-                    .build();
-            phones.add(phone);
+        if (phoneSearchRequestDto.age().isPresent()) {
+            phones = phones
+                .stream()
+                .filter(phone -> this.filterPhonesByAge(phone, phoneSearchRequestDto.age().get()))
+                .toList();
         }
         return phones;
     }

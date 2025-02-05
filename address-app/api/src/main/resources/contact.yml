@@ -18,6 +18,7 @@ paths:
         - name: age
           in: query
           required: false
+          description: Age maximum de la personne
           schema:
             type: integer
         - name: gender

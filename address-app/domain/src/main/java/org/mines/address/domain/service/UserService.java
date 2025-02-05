@@ -93,7 +93,6 @@ public class UserService implements UserUseCase {
         if (userSearchRequestDto.location().isEmpty() || userSearchRequestDto.radius().isEmpty()) {
             return users;
         } else {
-            System.out.println("2");
             return users
                     .stream()
                     .filter(user -> locationService.filterUsersByLocation(user, userSearchRequestDto))
