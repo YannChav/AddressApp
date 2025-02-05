@@ -116,7 +116,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     public List<User> searchUsers(UserSearchRequestDto userSearchRequestDto) {
         StringBuilder sqlSearchUsers = new StringBuilder();
         sqlSearchUsers.append("SELECT ");
-        sqlSearchUsers.append("u.firstname, u.lastname, u.gender, u.phone, u.email, u.birth_date, u.location_id, " );
+        sqlSearchUsers.append("u.id, u.firstname, u.lastname, u.gender, u.phone, u.email, u.birth_date, u.location_id, " );
         sqlSearchUsers.append("l.latitude, l.longitude ");
         sqlSearchUsers.append("from users u ");
         sqlSearchUsers.append("inner join locations l ON u.location_id = l.id ");

@@ -11,21 +11,6 @@ import java.time.ZoneId;
 public class AppConfiguration {
     @Bean
     public Clock clock() {
-        return new Clock() {
-            @Override
-            public ZoneId getZone() {
-                return null;
-            }
-
-            @Override
-            public Clock withZone(ZoneId zoneId) {
-                return null;
-            }
-
-            @Override
-            public Instant instant() {
-                return null;
-            }
-        };
+        return Clock.system(ZoneId.systemDefault());
     }
 }

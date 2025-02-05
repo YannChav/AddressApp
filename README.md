@@ -26,7 +26,6 @@ docker-compose -f docker/docker-compose.yml up -d
 
 Une fois le conteneur de base de données créé, lancer l'application avec Gradle :
 - Via *IntelliJ* : **Task** : `mines` -> `address-app` -> `Tasks` -> `application` -> `bootRun`
-- Via ligne de commande : `./gradlew :address-app:app:bootRun`
 
 ---
 
@@ -37,8 +36,8 @@ Une fois le conteneur de base de données créé, lancer l'application avec Grad
 - Créer l'image *Docker* du projet avec `docker build -t address-app -f docker/Dockerfile address-app/application/build/libs`
 - Démarrer l'application avec `docker-compose -f docker/docker-compose-production.yml up -d`
 - Quand l'application est lancée (avec gradle ou avec docker) : 
-    - Lister les utilisateurs `curl localhost:8080/user -H 'content-type:application/json'`
-    - Créer un utilisateur `curl localhost:8080/user -d '{"firstname": "John", "lastname": "Doe", "gender": "M", "phone": "123456789", "email": "john@doe.fr", "birthDate": "2003-08-08", "location": {"latitude": 49.1, "longitude": -2.12}}' -H 'content-Type:application/json'`
+    - Lister les utilisateurs `curl localhost:8080/api/v1/user -H 'content-type:application/json'`
+    - Créer un utilisateur `curl localhost:8080/api/v1/user -d '{"firstname": "John", "lastname": "Doe", "gender": "M", "phone": "123456789", "email": "john@doe.fr", "birthDate": "2003-08-08", "location": {"latitude": 49.1, "longitude": -2.12}}' -H 'content-Type:application/json'`
 
 Il est également possible de générer un client en bash par exemple :
 - La liste des générateurs est disponible [ici](https://openapi-generator.tech/docs/generators/))

@@ -13,6 +13,7 @@ paths:
       operationId: phonesSearch
       tags:
         - phones
+                .withGender(Optional.ofNullable(Gender.valueOf(gender.getValue())))
       parameters:
         - name: age
           in: query

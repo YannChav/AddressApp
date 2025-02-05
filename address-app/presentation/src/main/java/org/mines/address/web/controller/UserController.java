@@ -73,10 +73,10 @@ public class UserController implements UserApi {
     ) {
         UserSearchRequestDto userSearchRequestDto = UserSearchRequestDto.UserSearchRequestDtoBuilder
                 .aUserSearchRequestDto()
-                .withGender(Optional.of(Gender.valueOf(gender.getValue())))
-                .withLocation(Optional.of(this.map(location)))
-                .withRadius(Optional.of(radius))
-                .withLimit(Optional.of(limit))
+                .withGender(Optional.ofNullable(gender == null ? null : Gender.valueOf(gender.getValue())))
+                .withLocation(Optional.ofNullable(location == null ? null : this.map(location)))
+                .withRadius(Optional.ofNullable(radius))
+                .withLimit(Optional.ofNullable(limit))
                 .build();
 
         List<User> users = userUseCase.searchUsers(userSearchRequestDto);
@@ -116,7 +116,7 @@ public class UserController implements UserApi {
         apiUser.setId(user.id());
         apiUser.setFirstname(user.firstname());
         apiUser.setLastname(user.lastname());
-        apiUser.setGender(org.mines.contact.api.model.Gender.valueOf(user.gender().name()));
+        apiUser.setGender(org.mines.contact.api.model.Gender.valueOf(user.gender().toString()));
         apiUser.setPhone(user.phone());
         apiUser.setEmail(user.email());
         apiUser.setBirthDate(LocalDate.parse(user.birthDate()));

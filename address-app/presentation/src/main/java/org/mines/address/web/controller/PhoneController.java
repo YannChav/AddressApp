@@ -39,11 +39,11 @@ public class PhoneController implements PhoneApi {
     ) {
         PhoneSearchRequestDto phoneSearchRequestDto = PhoneSearchRequestDto.PhoneSearchRequestDtoBuilder
                 .aPhoneSearchRequestDto()
-                .withAge(Optional.of(age))
-                .withGender(Optional.of(Gender.valueOf(gender.getValue())))
-                .withLocation(Optional.of(this.map(location)))
-                .withRadius(Optional.of(radius))
-                .withLimit(Optional.of(limit))
+                .withAge(Optional.ofNullable(age))
+                .withGender(Optional.ofNullable(gender == null ? null : Gender.valueOf(gender.getValue())))
+                .withLocation(Optional.ofNullable(location == null ? null : this.map(location)))
+                .withRadius(Optional.ofNullable(radius))
+                .withLimit(Optional.ofNullable(limit))
                 .build();
 
         return ResponseEntity.ok(phoneUseCase.searchPhones(phoneSearchRequestDto)
