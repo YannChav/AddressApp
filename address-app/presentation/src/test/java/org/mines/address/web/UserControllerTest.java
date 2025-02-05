@@ -111,11 +111,11 @@ public class UserControllerTest {
                     "gender": "M",
                     "phone": "123456789",
                     "email": "john@doe.fr",
-                    "birthdate": "2003-08-08",
+                    "birthDate": "2003-08-08",
                     "location": {
-                        "id": "1"
-                        "latitude": "49.1"
-                        "longitude": "-2.12"
+                        "id": "1",
+                        "latitude": 49.1,
+                        "longitude": -2.12
                     }
                 }
                 """;
@@ -123,7 +123,9 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id.toString()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(id.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("john@doe.fr"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.location.longitude").value(-2.12));
 
         verify(userUseCase).insert(any());
     }
