@@ -142,13 +142,13 @@ public class UserController implements UserApi {
     private UpdatedUserDto map(org.mines.contact.api.model.UpdatedUserDto updatedUserDto) {
         return UpdatedUserDto.UpdatedUserDtoBuilder.anUpdatedUserDto()
                 .withId(updatedUserDto.getId())
-                .withFirstname(Optional.of(updatedUserDto.getFirstname()))
-                .withLastname(Optional.of(updatedUserDto.getLastname()))
-                .withGender(Optional.of(Gender.valueOf(updatedUserDto.getGender().getValue())))
-                .withPhone(Optional.of(updatedUserDto.getPhone()))
-                .withEmail(Optional.of(updatedUserDto.getEmail()))
-                .withLocation(Optional.of(this.map(updatedUserDto.getLocation())))
-                .withBirthDate(Optional.of(updatedUserDto.getBirthDate().toString()))
+                .withFirstname(Optional.ofNullable(updatedUserDto.getFirstname()))
+                .withLastname(Optional.ofNullable(updatedUserDto.getLastname()))
+                .withGender(Optional.ofNullable(updatedUserDto.getGender() == null ? null : Gender.valueOf(updatedUserDto.getGender().getValue())))
+                .withPhone(Optional.ofNullable(updatedUserDto.getPhone()))
+                .withEmail(Optional.ofNullable(updatedUserDto.getEmail()))
+                .withLocation(Optional.ofNullable(updatedUserDto.getLocation() == null ? null : this.map(updatedUserDto.getLocation())))
+                .withBirthDate(Optional.ofNullable(updatedUserDto.getBirthDate() == null ? null : updatedUserDto.getBirthDate().toString()))
                 .build();
     }
 

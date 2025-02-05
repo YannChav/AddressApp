@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Repository
@@ -80,22 +81,22 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public User update(User user) {
         StringBuilder sqlUpdateUser = new StringBuilder();
-        sqlUpdateUser.append("UPDATE users u SET ");
-        sqlUpdateUser.append("u.firstname = ?, ");
-        sqlUpdateUser.append("u.lastname = ?, ");
-        sqlUpdateUser.append("u.gender = ?, ");
-        sqlUpdateUser.append("u.phone = ?, ");
-        sqlUpdateUser.append("u.email = ?, ");
-        sqlUpdateUser.append("u.birth_date = ?, ");
-        sqlUpdateUser.append("u.location_id = ? " );
+        sqlUpdateUser.append("UPDATE users SET ");
+        sqlUpdateUser.append("firstname = ?, ");
+        sqlUpdateUser.append("lastname = ?, ");
+        sqlUpdateUser.append("gender = ?, ");
+        sqlUpdateUser.append("phone = ?, ");
+        sqlUpdateUser.append("email = ?, ");
+        sqlUpdateUser.append("birth_date = ?, ");
+        sqlUpdateUser.append("location_id = ? " );
 
         jdbcTemplate.update(sqlUpdateUser.toString(),
                 user.firstname(),
                 user.lastname(),
-                user.gender(),
+                user.gender().toString(),
                 user.phone(),
                 user.email(),
-                user.birthDate(),
+                LocalDate.parse(user.birthDate()),
                 user.location().id()
         );
 
