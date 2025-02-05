@@ -127,7 +127,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
             return this.jdbcTemplate.query(sqlSearchUsers.toString(),
                     new UserRowMapper(),
-                    userSearchRequestDto.gender().get(),
+                    userSearchRequestDto.gender().get().toString(),
                     userSearchRequestDto.limit().get()
             );
         } else {
