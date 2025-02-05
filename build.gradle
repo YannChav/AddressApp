@@ -1,0 +1,95 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'jacoco'
+    id "org.sonarqube" version "4.4.1.3373"
+    id "org.openapi.generator" version "7.4.0"
+    id "info.solidsoft.pitest" version "1.15.0"
+    id "org.openrewrite.rewrite" version "6.8.2"
+}
+apply plugin: 'java-library'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'org.mines'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = '21'
+}
+
+rewrite {
+    activeRecipe("org.openrewrite.java.format.AutoFormat")
+    activeRecipe("org.openrewrite.java.RemoveUnusedImports")
+    exclusion('build/generated/**/*.java')
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+pitest {
+    failWhenNoMutations = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "--enable-preview"
+}
+tasks.withType(Test).configureEach {
+    jvmArgs += "--enable-preview"
+}
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.postgresql:postgresql'
+}
+
+
+tasks.register('generateAddressApp', Tar) {
+    dependsOn 'build'
+    from("${projectDir}") {
+        include "address-app/**/"
+        exclude "address-app/**/out"
+        exclude "address-app/**/build"
+
+        include "build.gradle"
+        include "settings.gradle"
+        include "gradle.properties"
+        include "gradle/"
+        include "docker/"
+        include "examples/"
+        exclude "examples/build"
+        exclude "examples/out"
+    }
+
+    into "addressApp"
+    archiveBaseName="addressApp"
+}
+
+build.finalizedBy(generateAddressApp)

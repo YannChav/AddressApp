@@ -1,0 +1,16 @@
+apply from: "${rootDir}/gradle/backend-java.gradle"
+
+dependencies{
+    api(project(":address-app:api"))
+    api(project(":address-app:domain"))
+
+    implementation group: 'org.springframework', name: 'spring-web', version: '6.1.5'
+    implementation group: 'org.springframework', name: 'spring-webmvc', version: '6.1.5'
+    implementation group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.1.0-M1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.17.0'
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "junit"
+    }
+
+}

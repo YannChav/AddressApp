@@ -1,0 +1,297 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Mines - contact app
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080/api/v1
+paths:
+  /phone:
+    get:
+      description: List of phones based on multiple criteria.
+      operationId: phonesSearch
+      tags:
+        - phones
+      parameters:
+        - name: age
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: gender
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/UserBase/properties/gender"
+        - name: location
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/UserBase/properties/location"
+        - name: radius
+          in: query
+          required: false
+          description: Rayon en kilomètres
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: An array of phone numbers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Phone'
+        '400':
+          description: Invalid request data.
+        '500':
+          description: Internal server error.
+
+  /user:
+    get:
+      description: List of user with genre and/or location
+      operationId: userSearch
+      tags:
+        - users
+      parameters:
+        - name: gender
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/UserBase/properties/gender"
+        - name: location
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/UserBase/properties/location"
+        - name: radius
+          in: query
+          required: false
+          description: Rayon en kilomètres
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: An array of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request data.
+        '500':
+          description: Internal server error.
+
+    post:
+      description: Create a new user.
+      operationId: userAdd
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatedUserDto"
+      responses:
+        "201":
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid request data.
+        "500":
+          description: Internal server error.
+
+    put:
+      description: Update an user.
+      operationId: userUpdate
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatedUserDto"
+      responses:
+        "200":
+          description: User updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid request data.
+        "500":
+          description: Internal server error.
+
+  /user/{id}:
+    get:
+      description: Get an user by id.
+      operationId: getUserById
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user to find
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The data of the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '400':
+          description: Invalid request data.
+        '404':
+          description: Not found.
+        '500':
+          description: Internal server error.
+    delete:
+      description: Delete an user by id.
+      operationId: deleteUser
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user to delete
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: User deleted successfully.
+        "400":
+          description: Invalid request data.
+        "500":
+          description: Internal server error.
+
+components:
+  schemas:
+    Gender:
+      type: string
+      enum: [ "M", "F" ]
+      example: "M"
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+        latitude:
+          type: number
+          format: double
+          example: 41.40338
+        longitude:
+          type: number
+          format: double
+          example: 2.17403
+
+    UserBase:
+      type: object
+      properties:
+        firstname:
+          type: string
+          example: "John"
+        lastname:
+          type: string
+          example: "Doe"
+        location:
+          $ref: '#/components/schemas/Location'
+        birthDate:
+          type: string
+          format: date
+          example: "1990-05-15"
+        phone:
+          type: string
+          pattern: "^[+0-9][0-9\\- ]{6,20}$"
+          example: "+33 6 12 34 56 78"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        gender:
+          $ref: '#/components/schemas/Gender'
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              example: "550e8400-e29b-41d4-a716-446655440000"
+
+    CreatedUserDto:
+      allOf:
+        - $ref: '#/components/schemas/UserBase'
+        - type: object
+          required:
+            - firstname
+            - lastname
+            - location
+            - birthDate
+            - phone
+            - email
+            - gender
+
+    UpdatedUserDto:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          required:
+            - id
+
+    Phone:
+      type: object
+      properties:
+        age:
+          type: integer
+          example: 25
+        firstname:
+          type: string
+          example: "John"
+        lastname:
+          type: string
+          example: "Doe"
+        gender:
+          $ref: '#/components/schemas/Gender'
+        location:
+          $ref: '#/components/schemas/Location'
+        phone:
+          type: string
+          pattern: "^[+0-9][0-9\\- ]{6,20}$"
+          example: "+33 6 12 34 56 78"

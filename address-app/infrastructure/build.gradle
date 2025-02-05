@@ -1,0 +1,14 @@
+apply from: "${rootDir}/gradle/backend-java.gradle"
+
+dependencies {
+    api(project(":address-app:domain"))
+
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '6.1.5'
+    implementation 'org.springframework:spring-context:6.1.5'
+
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '10.8.1'
+    implementation group: 'org.flywaydb', name: 'flyway-database-hsqldb', version: '10.8.1'
+
+    implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.7.2'
+    implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.12.0'
+}

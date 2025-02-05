@@ -1,0 +1,23 @@
+apply from: "${rootDir}/gradle/backend-java.gradle"
+apply plugin: 'org.springframework.boot'
+
+bootJar {
+    mainClass="org.mines.address.app.AddressApp"
+}
+
+dependencies{
+    api(project(":address-app:domain"))
+    api(project(":address-app:infrastructure"))
+    api(project(":address-app:presentation"))
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    runtimeOnly('org.springframework.boot:spring-boot-starter-logging')
+    implementation('org.springframework.boot:spring-boot-starter-jdbc')
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.2'
+
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "junit"
+    }
+
+//    testImplementation "org.hsqldb:hsqldb:${hsqldbVersion}"
+}

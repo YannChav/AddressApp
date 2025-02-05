@@ -1,0 +1,6 @@
+apply from: "${rootDir}/gradle/backend-java.gradle"
+
+dependencies {
+    implementation 'org.springframework:spring-context:6.1.5'
+    implementation 'org.springframework:spring-tx:6.1.5'
+}
